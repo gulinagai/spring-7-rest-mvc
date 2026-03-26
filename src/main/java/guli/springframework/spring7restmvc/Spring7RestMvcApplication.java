@@ -9,5 +9,4 @@ public class Spring7RestMvcApplication {
     public static void main(String[] args) {
         SpringApplication.run(Spring7RestMvcApplication.class, args);
     }
-
 }
