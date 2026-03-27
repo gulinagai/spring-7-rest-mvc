@@ -4,22 +4,45 @@ import guli.springframework.spring7restmvc.model.Customer;
 import guli.springframework.spring7restmvc.service.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @AllArgsConstructor
 @Data
 @RestController
-@RequestMapping("api/v1/customer")
+@RequestMapping("/api/v1/customer")
 public class CustomerController {
 
     private CustomerService customerService;
+
+    @PutMapping("{customerId}")
+    public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
+
+        log.debug("customerId é {}" ,customerId);
+        log.debug("customer é {}" ,customer);
+        customerService.updateById(customerId, customer);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping
+    public ResponseEntity handlePost(@RequestBody Customer customer) {
+        Customer newCustomer = customerService.saveNewCustomer(customer);
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/api/v1/customer/" + newCustomer.getId().toString());
+
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
 
     @RequestMapping(value = "{customerId}", method = RequestMethod.GET)
     public Customer getCustomerById(@PathVariable("customerId") UUID customerId) {

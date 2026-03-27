@@ -6,6 +6,7 @@ import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,17 +18,36 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/v1/beer")
+@RequestMapping("/api/v1/beer")
 public class BeerController {
     private final BeerService beerService;
 
     //@RequestMapping(method = RequestMethod.POST)
+
+    @PutMapping("{beerId}")
+    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+        log.info("beerId é {}", beerId);
+        log.info("beer é {}", beer);
+
+        beerService.updateBeerById(beerId, beer);
+
+
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
     @PostMapping
     public ResponseEntity handlePost(@RequestBody Beer beer) {
 
         Beer savedBeer = beerService.saveNewBeer(beer);
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Location", "/api/v1/beer/" +  savedBeer.getId().toString());
+
                                                         // o ResponseEntity, representa o response completo, com status, body e headers.
-        return new ResponseEntity(HttpStatus.CREATED);  // nessa linha, é como se estivesse retornando um response da requisicao com o statusCode 201, que é o HttpStratus.CREATED e um body vazio
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);  // nessa linha, é como se estivesse retornando um response da requisicao com o statusCode 201, que é o HttpStratus.CREATED e um body vazio
     }
 
     @RequestMapping(method = RequestMethod.GET)

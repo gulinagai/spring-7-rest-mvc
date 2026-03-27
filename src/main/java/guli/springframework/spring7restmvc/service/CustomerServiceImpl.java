@@ -57,4 +57,28 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer getCustomerById(UUID id) {
         return this.customerMap.get(id);
     }
+
+    @Override
+    public Customer saveNewCustomer(Customer customer) {
+       Customer newCustomer =
+               Customer.builder()
+               .customerName(customer.getCustomerName())
+               .id(UUID.randomUUID())
+               .version(3123)
+               .createdDate(LocalDateTime.now())
+               .lastModifiedDate(LocalDateTime.now())
+               .build();
+
+       this.customerMap.put(newCustomer.getId(), newCustomer);
+
+       return newCustomer;
+    }
+
+    @Override
+    public void updateById(UUID customerId, Customer customer) {
+       Customer existingCustomer = this.customerMap.get(customerId);
+       existingCustomer.setCustomerName(customer.getCustomerName());
+
+       this.customerMap.put(existingCustomer.getId(), existingCustomer);
+    }
 }
