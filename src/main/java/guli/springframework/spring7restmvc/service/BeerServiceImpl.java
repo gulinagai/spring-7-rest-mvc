@@ -104,4 +104,10 @@ public class BeerServiceImpl implements BeerService {
         this.beerMap.put(existingBeer.getId(), existingBeer);
 
     }
+
+    @Override
+    public void deleteById(UUID beerID) {
+        beerMap.remove(beerID);
+    }
+
 }
