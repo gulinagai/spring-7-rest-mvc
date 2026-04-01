@@ -3,6 +3,7 @@ package guli.springframework.spring7restmvc.service;
 import guli.springframework.spring7restmvc.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -84,5 +85,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     public void deleteById(UUID customerID) {
        this.customerMap.remove(customerID);
+    }
+
+    public void updatePatchById(UUID customerID, Customer customer) {
+       Customer existingCustomer = this.customerMap.get(customerID);
+
+       if (StringUtils.hasText(customer.getCustomerName())) {
+           existingCustomer.setCustomerName(customer.getCustomerName());
+       }
+
     }
 }
