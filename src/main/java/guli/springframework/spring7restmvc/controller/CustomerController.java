@@ -4,6 +4,7 @@ import guli.springframework.spring7restmvc.model.Customer;
 import guli.springframework.spring7restmvc.service.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 @RestController
 @RequestMapping("/api/v1/customer")
