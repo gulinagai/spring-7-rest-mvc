@@ -36,8 +36,8 @@ public class BeerController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping({BEER_PATH_ID})
-    public ResponseEntity deleteById(@PathVariable("beerID") UUID beerID) {
+    @DeleteMapping(BEER_PATH_ID)
+    public ResponseEntity deleteById(@PathVariable("beerId") UUID beerID) {
 
         beerService.deleteById(beerID);
 
@@ -73,17 +73,49 @@ public class BeerController {
     }
 
     //@RequestMapping(method = RequestMethod.GET)
-    @GetMapping(BEER_PATH)
+    @GetMapping(value = BEER_PATH)
     public List<Beer> listBeers() {
         return beerService.listBeers();
     }
 
+//    @ExceptionHandler(NotFoundException.class)
+//    public ResponseEntity handleNotFoundException() {
+//        return ResponseEntity.notFound().build();
+//    } passado para o @ControllerAdvice !!!
+
    //@RequestMapping(value = "{beerId}", method = RequestMethod.GET)
-    @GetMapping(BEER_PATH_ID)
+    @GetMapping(value = BEER_PATH_ID)
     public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
 
         log.info("getBeerById foi chamado - Controller");
 
-        return beerService.getBeerById(beerId);
+        return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
     }
 }
+
+
+
+// esse return, essa linha de código no return define o que será retornado como response para o client side, isso?
+//
+//Sim — exatamente isso. 👍
+//
+//Essa linha no return do seu Controller define completamente a resposta HTTP que o client vai receber.
+//
+// O que o ResponseEntity controla
+//
+//Quando você retorna algo assim:
+//
+//return ResponseEntity.notFound().build();
+//
+//você está dizendo para o Spring:
+//
+//Status HTTP → 404 Not Found
+//Headers → (nenhum específico aqui)
+//Body → vazio
+//
+// Ou seja, o client (front-end, Postman, etc.) recebe exatamente isso.
+//
+// Outro exemplo (com body)
+// Com body:
+// return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//        .body("Produto não encontrado");

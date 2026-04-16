@@ -22,6 +22,7 @@ import tools.jackson.databind.ObjectMapper;
 import javax.print.attribute.standard.Media;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static guli.springframework.spring7restmvc.controller.BeerController.BEER_PATH;
@@ -148,11 +149,20 @@ class BeerControllerTest {
 
 
     @Test
+    void getBeerByIdNotFound() throws Exception {
+
+        given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
+
+        mockmvc.perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testGetBeerById() throws Exception {
 
         Beer testBeer = beerServiceImpl.listBeers().get(0);
 
-        given(beerService.getBeerById(testBeer.getId())).willReturn(testBeer);
+        given(beerService.getBeerById(testBeer.getId())).willReturn(Optional.of(testBeer));
 
         mockmvc.perform(get(BEER_PATH_ID, testBeer.getId())
                 .accept(MediaType.APPLICATION_JSON))
